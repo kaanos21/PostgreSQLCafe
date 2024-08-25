@@ -1,0 +1,221 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css">
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="alert alert-success">
+            Bağlantının Durumu: <strong id="connstatus"></strong>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        Toplam Ürün
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title" id="totalproductcount">0</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        Toplam Şef
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title" id="totalchefcount">0</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        Toplam Rezervasyon
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title" id="totalreservationcount">0</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        Toplam Kategori
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title" id="totalcategorycount">0</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal HTML -->
+        <div class="modal fade" id="mailModal" tabindex="-1" aria-labelledby="mailModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="mailModalLabel">Mail Gönder</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="mailForm" action="/SignalRAdmin/Mail" method="post">
+                            <div class="mb-3">
+                                <label for="receiverMail" class="form-label">Alıcı Mail</label>
+                                <input type="email" class="form-control" id="receiverMail" name="ReceiverMail" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="subject" class="form-label">Konu</label>
+                                <input type="text" class="form-control" id="subject" name="Subject" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="body" class="form-label">Mesaj</label>
+                                <textarea class="form-control" id="body" name="Body" rows="4" readonly></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Gönder</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rezervasyonlar Tablosu -->
+        <div class="card mt-4">
+            <div class="card-header">
+                Rezervasyonlar
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Ad</th>
+                            <th>Email</th>
+                            <th>Telefon</th>
+                            <th>Misafir Sayısı</th>
+                            <th>Tarih</th>
+                            <th>Saat</th>
+                            <th>Mesaj</th>
+                            <th>İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reservationTableBody">
+                        <!-- Rezervasyon verileri buraya eklenecek -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+    <script type="text/javascript">
+            $(document).ready(() => {
+                var connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:7085/SignalRHub").build();
+
+                function updateDashboard() {
+                    connection.invoke("TotalProductCount");
+                    connection.invoke("TotalReservationCount");
+                    connection.invoke("TotalChefCount");
+                    connection.invoke("TotalCategoryCount");
+                    connection.invoke("GetReservationListAsync");
+                }
+
+                $("#connstatus").text(connection.state);
+
+                connection.start().then(() => {
+                    $("#connstatus").text(connection.state);
+                    updateDashboard(); // İlk veri çekimini yap
+
+                    // Verileri belirli aralıklarla yenile
+                    setInterval(updateDashboard, 1000);
+
+                }).catch((err) => { console.log(err) });
+
+                connection.on("ReceiveTotalProductCount", (value) => {
+                    $("#totalproductcount").text(value);
+                });
+
+                connection.on("ReceiveTotalReservationCount", (value) => {
+                    $("#totalreservationcount").text(value);
+                });
+
+                connection.on("ReceiveTotalChefCount", (value) => {
+                    $("#totalchefcount").text(value);
+                });
+
+                connection.on("ReceiveTotalCategoryCount", (value) => {
+                    $("#totalcategorycount").text(value);
+                });
+
+                connection.on("ReceiveReservationList", (reservations) => {
+                    var tableBody = $("#reservationTableBody");
+                    tableBody.empty();
+
+                    if (Array.isArray(reservations)) {
+                        reservations.forEach(reservation => {
+                            var row = `<tr>
+                                                <td>${reservation.id !== undefined ? reservation.id : 'N/A'}</td>
+                                                <td>${reservation.name !== undefined ? reservation.name : 'N/A'}</td>
+                                                <td>${reservation.mail !== undefined ? reservation.mail : 'N/A'}</td>
+                                                <td>${reservation.phoneNumber !== undefined ? reservation.phoneNumber : 'N/A'}</td>
+                                                <td>${reservation.guestCount !== undefined ? reservation.guestCount : 'N/A'}</td>
+                                                <td>${reservation.date ? new Date(reservation.date).toLocaleDateString() : 'N/A'}</td>
+                                                <td>${reservation.time ? new Date('1970-01-01T' + reservation.time + 'Z').toLocaleTimeString() : 'N/A'}</td>
+                                                <td>${reservation.reservationMessage !== undefined ? reservation.reservationMessage : 'N/A'}</td>
+                                                <td><button type="button" class="btn btn-primary btn-sm open-mail-modal" data-mail="${reservation.mail}" data-bs-toggle="modal" data-bs-target="#mailModal">Mail Gönder</button></td>
+                                            </tr>`;
+                            tableBody.append(row);
+                        });
+
+                        // Modal'ı açarken mail, konu, ve mesaj bilgilerini doldur
+                        $(".open-mail-modal").on("click", function () {
+                            var receiverMail = $(this).data("mail");
+                            $("#receiverMail").val(receiverMail);
+                            $("#subject").val("Rezervasyon");
+                            $("#body").val("Rezervasyonunuz oluşturulmuştur.");
+                        });
+
+                    } else {
+                        console.error("Received data is not an array:", reservations);
+                    }
+                });
+
+                // Mail gönderme işlemini tetikleyen event
+                $("#sendMailBtn").on("click", function () {
+                    var receiverMail = $("#receiverMail").val();
+                    var subject = $("#subject").val();
+                    var body = $("#body").val();
+
+                    $.post("/SignalRAdmin/Mail", { ReceiverMail: receiverMail, Subject: subject, Body: body })
+                        .done(function () {
+                            // Başarı mesajını göster
+                            alert("Mail başarıyla gönderildi!");
+
+                            // Modalı kapat
+                            $("#mailModal").modal('hide');
+
+                            // Index sayfasına yönlendir
+                            window.location.href = "/SignalRAdmin/Index";
+                        })
+                        .fail(function () {
+                            alert("Mail gönderilirken bir hata oluştu.");
+                        });
+                });
+            });
+
+
+
+
+
+    </script>
+
+
+</body>
+</html>

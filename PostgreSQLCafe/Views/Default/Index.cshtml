@@ -1,0 +1,59 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+@await Component.InvokeAsync("_HeadComponentPartial")
+    
+    <body>
+    
+    <!-- ***** Preloader Start ***** -->
+    @await Component.InvokeAsync("_PreloaderComponentPartial")
+      
+    <!-- ***** Preloader End ***** -->
+    
+    
+    <!-- ***** Header Area Start ***** -->
+    @await Component.InvokeAsync("_HeaderComponentPartial")
+   
+    <!-- ***** Header Area End ***** -->
+
+    <!-- ***** Main Banner Area Start ***** -->
+    @await Component.InvokeAsync("_BannerAreaComponentPartial")
+    
+    <!-- ***** Main Banner Area End ***** -->
+
+    <!-- ***** About Area Starts ***** -->
+    @await Component.InvokeAsync("_AboutAreaComponentPartial")
+    
+    <!-- ***** About Area Ends ***** -->
+
+    <!-- ***** Menu Area Starts ***** -->
+    @await Component.InvokeAsync("_MenuComponentPartial")
+    
+    <!-- ***** Menu Area Ends ***** -->
+
+    <!-- ***** Chefs Area Starts ***** -->
+    @await Component.InvokeAsync("_ChefComponentPartial")
+    
+    <!-- ***** Chefs Area Ends ***** -->
+
+    <!-- ***** Reservation Us Area Starts ***** -->
+    @await Component.InvokeAsync("_ReservationComponentPartial")
+    <!-- ***** Reservation Area Ends ***** -->
+
+    <!-- ***** Menu Area Starts ***** -->
+    @await Component.InvokeAsync("_MenuAreaComponentPartial")
+   
+    <!-- ***** Chefs Area Ends ***** --> 
+    
+    <!-- ***** Footer Start ***** -->
+    @await Component.InvokeAsync("_FooterComponentPartial")
+
+    <!-- jQuery -->
+    @await Component.InvokeAsync("_ScriptsComponentPartial")
+  </body>
+</html>

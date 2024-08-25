@@ -1,0 +1,68 @@
+﻿@model List<PostgreSQLCafe.Dto.ChefDto.ResultChefWithSocialMediaDto>
+
+<section class="section" id="chefs">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 offset-lg-4 text-center">
+                <div class="section-heading">
+                    <h6>Our Chefs</h6>
+                    <h2>We offer the best ingredients for you</h2>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            @foreach (var chef in Model)
+            {
+                <div class="col-lg-4">
+                    <div class="chef-item">
+                        <div class="thumb">
+                            <div class="overlay"></div>
+                            <ul class="social-icons">
+                                @foreach (var link in chef.SocialMediaLinks)
+                                {
+                                    <li>
+                                        <a href="@link" target="_blank">
+                                            <i class="fa @GetSocialMediaIcon(link)"></i>
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                            <img src="assets/images/chefs-01.jpg" alt="Chef @chef.Id">
+                        </div>
+                        <div class="down-content">
+                            <h4>@chef.Name</h4>
+                            <span>@chef.Role</span>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+@functions {
+    private string GetSocialMediaIcon(string link)
+    {
+        if (link.Contains("facebook"))
+        {
+            return "fa-facebook";
+        }
+        else if (link.Contains("twitter"))
+        {
+            return "fa-twitter";
+        }
+        else if (link.Contains("instagram"))
+        {
+            return "fa-instagram";
+        }
+        else if (link.Contains("behance"))
+        {
+            return "fa-behance";
+        }
+        else if (link.Contains("google"))
+        {
+            return "fa-google";
+        }
+        return "fa-link"; // Default icon
+    }
+}

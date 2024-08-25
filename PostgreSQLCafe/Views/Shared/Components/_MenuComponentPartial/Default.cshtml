@@ -1,0 +1,131 @@
+﻿@model List<PostgreSQLCafe.Dto.ProductDto.ResultProductDto>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Menu</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .section {
+            padding: 60px 0;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+        }
+        .section-heading {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .section-heading h6 {
+            color: #007bff;
+            font-size: 18px;
+            margin: 0;
+        }
+        .section-heading h2 {
+            font-size: 36px;
+            margin: 10px 0 0;
+        }
+        .menu-item-carousel {
+            padding: 20px 0;
+        }
+        .owl-menu-item {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+        .item {
+            flex: 1 1 calc(33.333% - 20px);
+            margin: 10px;
+            box-sizing: border-box;
+        }
+        .card1 {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .card1:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .info {
+            margin-top: 15px;
+        }
+        .title {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .description {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .price {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .main-text-button {
+            margin-top: 20px;
+        }
+        .scroll-to-section a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .scroll-to-section a:hover {
+            text-decoration: underline;
+        }
+        media (max-width: 768px) {
+            .item {
+                flex: 1 1 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="section" id="menu">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="section-heading">
+                        <h6>Our Menu</h6>
+                        <h2>Our selection of cakes with quality taste</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="menu-item-carousel">
+            <div class="col-lg-12">
+                <div class="owl-menu-item owl-carousel">
+                    @foreach(var item in Model)
+                    {
+                      <div class="item">
+                        <div class="card card1">
+                            <div class="info">
+                                <h1 class="title">@item.Name</h1>
+                                <p class="description">@item.Description</p>
+                                <div class="price"><h6>@item.Price</h6></div>
+                                <div class="main-text-button">
+                                    <div class="scroll-to-section"><a href="#reservation">Make Reservation <i class="fa fa-angle-down"></i></a></div>
+                                </div>
+                            </div>
+                        </div>
+                      </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

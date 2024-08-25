@@ -1,0 +1,54 @@
+﻿@model Dictionary<int, List<PostgreSQLCafe.Dto.ProductDto.ResultProductWithCategoryDto>>
+
+<section class="section" id="offers">
+    <div class="container">
+        <div class="row">
+            <!-- Section heading kodu -->
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="row" id="tabs">
+                    <div class="col-lg-12">
+                        <!-- Kategorilere göre Tab Başlıkları -->
+                        <div class="heading-tabs">
+                            <div class="row">
+                                <div class="col-lg-6 offset-lg-3">
+                                    <ul>
+                                        @foreach (var category in Model.Keys)
+                                        {
+                                            <li><a href='#tabs-@category'><img src="assets/images/tab-icon-" alt="">@category</a></li>
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <section class='tabs-content'>
+                            @foreach (var category in Model)
+                            {
+                                <article id='tabs-@category.Key'>
+                                    <div class="row">
+                                        @foreach (var product in category.Value)
+                                        {
+                                            <div class="col-lg-6">
+                                                <div class="tab-item">
+                                                    <img src="@product.ImageUrl" alt="@product.Name">
+                                                    <h4>@product.Name</h4>
+                                                    <p>@product.Description</p>
+                                                    <div class="price">
+                                                        <h6>@product.Price TL</h6>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </article>
+                            }
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
