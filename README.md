@@ -39,3 +39,4 @@ PostgreSQL Cafe, ASP.NET Core 6.0 kullanılarak geliştirilmiş bir kafe rezerva
 ## SOLID Prensipleri
 
 Projede SOLID prensiplerine uygun olarak geliştirme yapılmıştır.  
+
